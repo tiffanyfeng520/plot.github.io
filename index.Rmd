@@ -1,0 +1,16 @@
+---
+title: "This is the R plot website"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# Links to other websites
+
+* [Lollipop Plot](lollipop_plot.html)
+* [Correlation Plot](corr_plot.html)
+* [Circular Plot](circular_plot.html)
+
+
+

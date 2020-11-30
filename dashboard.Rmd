@@ -1,0 +1,78 @@
+---
+title: "Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(p8105.datasets)
+library(plotly)
+library(flexdashboard)
+library(lubridate)
+```
+
+```{r, message = FALSE}
+data("ny_noaa")
+ny_noaa = 
+  ny_noaa %>% 
+  select(date, id, tmax, tmin, prcp) %>% 
+  mutate(tmax = as.numeric(tmax),
+         tmin = as.numeric(tmin),
+         year = year(date),
+         month = month(date)) %>% 
+  filter(year > 1990)
+```
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A: Scatter plot for average maximum and minimum temparature in 1991 to 2010 in each weather station
+
+
+```{r, message=FALSE,warning=FALSE}
+ny_noaa %>% 
+  group_by(id, year) %>% 
+  summarize(Average_maximum_temparature= mean(tmax, na.rm = TRUE),
+            Average_minimum_temparature = mean(tmin, na.rm = TRUE)) %>% 
+  mutate(text_label = str_c("Weather station ID: ", id, "\nYear: ", year, "\nAverage maximum temparature: ", Average_maximum_temparature, "\nAverage minimum temparature: ", Average_minimum_temparature)) %>% 
+ plot_ly(
+    y = ~Average_maximum_temparature, x = ~Average_minimum_temparature, color = ~as.factor(year), text = ~text_label,
+    type = "scatter", colors = "viridis")
+```
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B: Bar plot for average precipitation in 1991 to 2010
+
+
+```{r, message=FALSE,warning=FALSE}
+ny_noaa %>% 
+  group_by(year) %>% 
+  summarise(average_precipitation = mean(prcp, na.rm = TRUE)) %>%
+  mutate(text_label = str_c("Year: ", year, "\nAverage precipitation: ", average_precipitation)) %>% 
+  plot_ly(
+    y = ~average_precipitation, x = ~year, color = ~as.factor(year), text = ~text_label,
+    type = "bar", colors = "viridis")
+```
+
+
+### Chart C: Trend for average precipitation in 1991 to 2010 in stations begin with "USW"
+
+```{r, message=FALSE,warning=FALSE}
+ny_noaa %>% 
+  filter(str_detect(id, "USW")) %>% 
+  group_by(id, year) %>% 
+  summarise(average_precipitation = mean(prcp, na.rm = TRUE)) %>%
+  mutate(text_label = str_c("Weather station ID: ", id, "\nYear: ", year, "\nAverage precipitation: ", average_precipitation)) %>% 
+  plot_ly(
+    y = ~average_precipitation, x = ~year, color = ~id, text = ~text_label,
+    type = "scatter", colors = "viridis") %>% 
+  add_lines(color = ~id)
+```
+
