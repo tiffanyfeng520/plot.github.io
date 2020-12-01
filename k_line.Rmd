@@ -5,5 +5,5 @@ date: "12/1/2020"
 output: html_document
 ---
 
-
-<img src="image/k_kine.JPG" style="width:75%">
+- Code详见 [github](https://github.com/tiffanyfeng520/Stock/blob/master/Result/K_line.py)  (with Python)
+- <img src="image/a.png" style="width:75%">
