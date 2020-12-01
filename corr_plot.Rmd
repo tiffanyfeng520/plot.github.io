@@ -1,6 +1,10 @@
 ---
 title: "corr_plot"
-output: html_document
+author: "Yatong Feng"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, message = F, include = F}

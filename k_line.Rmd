@@ -1,0 +1,9 @@
+---
+title: "k_line"
+author: "Yatong Feng"
+date: "12/1/2020"
+output: html_document
+---
+
+
+<img src="image/k_kine.JPG" style="width:75%">

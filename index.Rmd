@@ -13,10 +13,11 @@ output:
 
 # Other Basic Plot
 
-#### [Sankey](Sankey.html)
+#### [Basic Plot](basic_plot.html)
 
 # Fancy 一点点
 
+#### [Sankey](Sankey.html)
 #### [Lollipop Plot](lollipop_plot.html)
 #### [Correlation Plot](corr_plot.html)
 #### [Circular Plot](circular_plot.html)
@@ -26,6 +27,6 @@ output:
 # Fancy 很多
 
 #### [Dashboard](dashboard.html)
-
+#### [k线](k_line.html)
 
 

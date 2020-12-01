@@ -12,7 +12,7 @@
 <meta name="author" content="Yatong Feng" />
 
 
-<title>This is the R plot website</title>
+<title>basic_plot</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,9 +20,6 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -254,69 +251,6 @@ $(document).ready(function () {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -324,16 +258,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -377,59 +301,63 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">This is the R plot website</h1>
+<h1 class="title toc-ignore">basic_plot</h1>
 <h4 class="author">Yatong Feng</h4>
+<h4 class="date">12/1/2020</h4>
 
 </div>
 
 
-<div id="周报图" class="section level1">
-<h1>周报图</h1>
-<div id="dau-plot" class="section level4">
-<h4><a href="plot_test.html">DAU Plot</a></h4>
+<ul>
+<li>数据集：R自带 rnoaa::meteo_pull_monitors</li>
+</ul>
+<div id="basic-scatterplot" class="section level1">
+<h1>Basic scatterplot</h1>
+<pre class="r"><code>ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point()</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
+<div id="advanced-scatterplot" class="section level1">
+<h1>Advanced scatterplot</h1>
+<pre class="r"><code>ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name))</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point(aes(size = prcp), alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(weather_df, aes(x = tmax, y = tmin)) + 
+  geom_hex()</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
-<div id="other-basic-plot" class="section level1">
-<h1>Other Basic Plot</h1>
-<div id="basic-plot" class="section level4">
-<h4><a href="basic_plot.html">Basic Plot</a></h4>
+<div id="point-line" class="section level1">
+<h1>point + line</h1>
+<pre class="r"><code>central_park = 
+  weather_df %&gt;% 
+  filter(name == &quot;CentralPark_NY&quot;)
+
+waikiki = 
+  weather_df %&gt;% 
+  filter(name == &quot;Waikiki_HA&quot;)
+
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point() + 
+  geom_line(data = central_park)</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
-</div>
-<div id="fancy-一点点" class="section level1">
-<h1>Fancy 一点点</h1>
-<div id="sankey" class="section level4">
-<h4><a href="Sankey.html">Sankey</a></h4>
-</div>
-<div id="lollipop-plot" class="section level4">
-<h4><a href="lollipop_plot.html">Lollipop Plot</a></h4>
-</div>
-<div id="correlation-plot" class="section level4">
-<h4><a href="corr_plot.html">Correlation Plot</a></h4>
-</div>
-<div id="circular-plot" class="section level4">
-<h4><a href="circular_plot.html">Circular Plot</a></h4>
-</div>
-<div id="word-cloud-plot" class="section level4">
-<h4><a href="word_cloud.html">Word Cloud Plot</a></h4>
-</div>
-<div id="animation" class="section level4">
-<h4><a href="animation.html">Animation</a></h4>
-</div>
-</div>
-<div id="fancy-很多" class="section level1">
-<h1>Fancy 很多</h1>
-<div id="dashboard" class="section level4">
-<h4><a href="dashboard.html">Dashboard</a></h4>
-</div>
-<div id="k线" class="section level4">
-<h4><a href="k_line.html">k线</a></h4>
-</div>
+<div id="violin-box-plot" class="section level1">
+<h1>violin / Box plot</h1>
+<pre class="r"><code>weather_df %&gt;%
+  mutate(name = forcats::fct_relevel(name, c(&quot;Waikiki_HA&quot;, &quot;CentralPark_NY&quot;, &quot;Waterhole_WA&quot;))) %&gt;% 
+  ggplot(aes(x = name, y = tmax)) + 
+  geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="basic_plot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 
 
 
-</div>
-</div>
 
 </div>
 
@@ -462,32 +390,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
