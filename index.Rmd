@@ -1,16 +1,26 @@
 ---
 title: "This is the R plot website"
+author: "Yatong Feng"
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-# Links to other websites
+# 周报图
 
-* [Lollipop Plot](lollipop_plot.html)
-* [Correlation Plot](corr_plot.html)
-* [Circular Plot](circular_plot.html)
+#### [DAU Plot](plot_test.html)
+
+# Other Basic Plot
+
+# Fancy Plot
+
+#### [Lollipop Plot](lollipop_plot.html)
+#### [Correlation Plot](corr_plot.html)
+#### [Circular Plot](circular_plot.html)
+#### [Word Cloud Plot](word_cloud.html)
+#### [Animation](animation.html)
+
 
 
 

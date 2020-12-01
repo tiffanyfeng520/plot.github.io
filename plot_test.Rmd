@@ -1,0 +1,218 @@
+---
+title: "dau_plot"
+author: Yatong Feng
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## set input
+
+- 均为mock数据
+
+```{r}
+input_file = "./data/dau_test.xlsx"
+```
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(plotly)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 10, 
+  fig.height = 4,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "none"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r percent_formula, include=FALSE}
+ciliu_percent_format <- function(x){
+  return(paste0(round(x*100,digits = 1),"%"))
+}
+```
+
+
+```{r load_data_func, message=FALSE, include=FALSE}
+load_data <- function(sheet_name) {
+rawdata = 
+  read_excel(input_file, sheet = sheet_name) %>% 
+  as.data.frame() %>% 
+  janitor::clean_names() %>% 
+  rename(
+    did_cnt = xian_zhuang,
+    exclude_did_cnt = ti_chu_la_huo_hou
+  ) %>% 
+  mutate(date = as.Date(date)) %>% 
+  mutate(week = epiweek(date),
+         weekday = wday(date))
+
+week_2 = c()
+week = 1
+for (i in 1:length(rawdata$weekday)) {
+  
+  if(rawdata$weekday[i] == 3 & rawdata$weekday[i+1] == 4) {
+    week = week + 1
+    week_2 = append(week_2, week)
+  }else{
+    week_2 = append(week_2, week)
+  }
+}
+
+rawdata_test = 
+  rawdata %>% 
+  mutate(week_2 = week_2) %>% 
+  pivot_longer(
+    did_cnt:exclude_did_cnt,
+    names_to = "lahuo",
+    values_to = "did"
+  )
+
+return(rawdata_test)
+}
+```
+
+
+```{r get_date, message=FALSE, include=FALSE}
+poquan_raw_df = 
+read_excel(input_file) %>% 
+  mutate(date = as.Date(date)) %>% 
+  as.data.frame() %>% 
+  janitor::clean_names() %>% 
+  mutate(week = epiweek(date),
+         weekday = wday(date))
+
+week_2 = c()
+week = 1
+for (i in 1:length(poquan_raw_df$weekday)) {
+  
+  if(poquan_raw_df$weekday[i] == 3 & poquan_raw_df$weekday[i+1] == 4) {
+    week = week + 1
+    week_2 = append(week_2, week)
+  }else{
+    week_2 = append(week_2, week)
+  }
+}
+
+  
+poquan_raw_df = 
+  poquan_raw_df %>% 
+  mutate(week_2 = week_2) %>% 
+  rename(did = xian_zhuang)
+
+start_date = poquan_raw_df$date[1]
+end_date = poquan_raw_df$date[length(poquan_raw_df$date)]
+```
+
+## annotation
+
+```{r annota_max_min}
+annotation_max <- function(rawdata) {
+
+  rawdata %>% 
+  filter(weekday %in% c(6,7,1,2)) %>% 
+  group_by(date) %>% 
+  filter(did == max(did)) %>% 
+  group_by(week_2) %>% 
+  filter(did == max(did))
+}
+
+annotation_min <- function(rawdata) {
+  rawdata %>% 
+  group_by(date) %>% 
+  filter(did == min(did)) %>% 
+  group_by(week) %>% 
+  filter(did == min(did))
+  
+}
+```
+
+
+## Main Plot
+
+```{r main_plot}
+
+main_plot <- function(label){
+  
+line_plot = 
+  load_data(label) %>%
+  mutate(weekend = wday(date, week_start = getOption("lubridate.week.start", 1)) > 5) %>%
+  ggplot() +
+  geom_point(aes(x = date, y = did), color = "#990000")+
+  geom_line(aes(x = date, y = did, linetype=lahuo), color = "#990000")
+
+
+line_plot +
+  scale_fill_manual(values = c("white", "#8FBC94")) +
+  geom_tile(aes(x = date,y = min(did, na.rm = T), height = Inf,fill = weekend), alpha = .3)
+ 
+}
+
+```
+
+
+## Anno Plot
+
+```{r anno_plot}
+anno_plot <- function(label, digit = 1, nudge = 0.02, 
+                     ymin = min(annotation_min(load_data(label))$did)*0.8, 
+                     ymax = max(annotation_max(load_data(label))$did)*1.2) {
+  
+  
+annotate_plot =
+  main_plot(label)+
+  geom_text(data = annotation_max(load_data(label)), 
+            aes(x = date, y = did, label = paste0(round(did, digit))), 
+            nudge_y = nudge)+
+  geom_text(data =  annotation_min(load_data(label)), 
+            aes(x = date, y = did, label = paste0(round(did, digit))), 
+            nudge_y = -1 * nudge)+ 
+  scale_x_date(breaks = seq(start_date, end_date,by="week"), date_labels = "%Y-%m-%d")+
+  ylim(ymin, ymax)+
+  labs(x = "", y = "")
+
+annotate_plot +
+  theme_bw() + 
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+}
+
+```
+
+
+## Call Function
+```{r dau_plot}
+kuaishou_dau_plot = anno_plot("Sheet1", nudge = 0.01, ymin = 2.6, ymax = 3.1, digit = 3)
+```
+
+## 交互
+
+```{r}
+ggplotly(kuaishou_dau_plot)
+```
+
+## final
+
+```{r}
+kuaishou_dau_plot
+```
