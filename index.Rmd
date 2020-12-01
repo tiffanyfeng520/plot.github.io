@@ -9,7 +9,7 @@ output:
 
 # 周报图
 
-#### [DAU Plot](plot_test.html)
+#### [DAU Plot](plot_test.html) (mock数据)
 
 # Other Basic Plot
 

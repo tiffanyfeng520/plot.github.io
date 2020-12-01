@@ -2,10 +2,11 @@
 title: "basic_plot"
 author: "Yatong Feng"
 date: "12/1/2020"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
-
-* 数据集：R自带 rnoaa::meteo_pull_monitors
 
 ```{r, include=FALSE}
 library(tidyverse)
