@@ -13,7 +13,9 @@ output:
 
 # Other Basic Plot
 
-# Fancy Plot
+#### [Sankey](Sankey.html)
+
+# Fancy 一点点
 
 #### [Lollipop Plot](lollipop_plot.html)
 #### [Correlation Plot](corr_plot.html)
@@ -21,6 +23,9 @@ output:
 #### [Word Cloud Plot](word_cloud.html)
 #### [Animation](animation.html)
 
+# Fancy 很多
+
+#### [Dashboard](dashboard.html)
 
 
 

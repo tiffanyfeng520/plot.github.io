@@ -12,10 +12,7 @@ library(plotly)
 
 knitr::opts_chunk$set(
   message = F,
-  warning = F,
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
+  warning = F
 )
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 options(

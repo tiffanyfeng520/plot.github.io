@@ -5,9 +5,12 @@ date: "12/1/2020"
 output: html_document
 ---
 
-```{r}
+```{r, message=FALSE, warning=FALSE, include=FALSE}
 library(plotly)
+```
 
+
+```{r, message=FALSE, warning=FALSE}
 accumulate_by <- function(dat, var) {
   var <- lazyeval::f_eval(var, dat)
   lvls <- plotly:::getLevels(var)

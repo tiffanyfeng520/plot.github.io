@@ -1,0 +1,65 @@
+---
+title: "Sankey"
+author: "Yatong Feng"
+output: html_document
+---
+
+```{r, message=F, include=FALSE}
+library(plotly)
+library(tidyverse)
+library(readxl)
+library(networkD3)
+
+knitr::opts_chunk$set(
+  message = F,
+  warning = F,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+```
+
+```{r, message = F, include=FALSE}
+data_long = 
+  read_excel("./data/sankey.xlsx") %>%
+  as.data.frame() %>% 
+  janitor::clean_names() %>% 
+  mutate(x1 = c("quan", "gao", "zhong", "di", "xin", "chen","wei")) %>% 
+  rename(source = x1) %>% 
+  pivot_longer(
+    quan:chen,
+    names_to = "target",
+    values_to = "value"
+  ) %>% 
+  mutate(
+    target = paste0(target, " ", sep="")
+  )
+```
+
+
+```{r, message = F, include=FALSE}
+nodes = data.frame(
+  name=c(as.character(data_long$source),as.character(data_long$target)) %>% unique())
+
+data_long$IDsource=match(data_long$source, nodes$name)-1 
+data_long$IDtarget=match(data_long$target, nodes$name)-1
+
+ColourScal ='d3.scaleOrdinal() .range(["#084594","#2171b5","#4292c6","#6baed6","#9ecae1","#c6dbef","#238b45","#41ab5d","#74c476","#b10026", "#fc4e2a","#ffffb2"])'
+
+```
+
+
+```{r, message=FALSE}
+sankeyNetwork(Links = data_long, Nodes = nodes,
+            Source = "IDsource", Target = "IDtarget",
+            Value = "value", NodeID = "name", 
+            sinksRight=FALSE, colourScale=ColourScal, 
+            nodeWidth=40, fontSize=13, nodePadding=20,
+            iterations=0
+            )
+```
